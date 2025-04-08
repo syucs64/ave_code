@@ -5,6 +5,6 @@ if u >= max(a, 0)
 elseif u < min(-a, 0)
     num = u + a;
 else
-    num = a;
+    num = 0;
 end
       
