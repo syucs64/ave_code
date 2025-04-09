@@ -1,10 +1,7 @@
-function num = prox(a, u)
+function  x = prox(v1, v2)
 
-if u >= max(a, 0)
-    num = u - a;
-elseif u < min(-a, 0)
-    num = u + a;
-else
-    num = 0;
-end
-      
+x = zeros(size(v1));  
+cond1 = (v2 >= max(v1, 0));
+x(cond1) = v2(cond1) - v1(cond1);
+cond2 = (v2 < min(-v1, 0));
+x(cond2) = v2(cond2) + v1(cond2);

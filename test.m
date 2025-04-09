@@ -1,29 +1,31 @@
 clc; clear; close all;
 n = 1000;
 pl = @(x) (abs(x) + x)/2;  
-num_trials = 50; % 设置随机试验次数
+num_trials = 1; % 设置随机试验次数
 
 % 预定义存储结果的变量
 x_norms = zeros(num_trials, 1);
 r_norms = zeros(num_trials, 1);
 grad_norms = zeros(num_trials, 1);
 iters = zeros(num_trials, 1);
-
+x_init = zeros(n, 1);
+tol = 1e-12;
 for k = 1:num_trials
     % 每次试验生成新的随机数据
     x = 10 * (rand(n, 1) - rand(n, 1));
     u = 1 * pl(x);
     A = null(u');
     A = A * A';
-    A = A + eye(n);
+    A = A +  eye(n);
     b = 5 * rand(n, 1);
     
     % 调用求解函数
     [x_star, r_star, iter, grad_norm] = solve_AVE_GN(A, b);
+    [x_star1, f_vals] = solve_ave(A, b, x_init, tol);
     
     % 记录当前试验结果
     x_norms(k) = norm(x_star, inf);
-    r_norms(k) = norm(r_star, inf);
+    r_norms(k) = norm(r_star, 2)^2;
     grad_norms(k) = grad_norm;
     iters(k) = iter;
 end
