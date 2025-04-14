@@ -1,4 +1,11 @@
 clc; clear; close all;
+
+clear all;
+
+sizes = [1e3, 1e4, 1e5, 1e6]; % 测试不同规模的向量
+num_trials = 100;             % 每个规模测试次数
+
+
 n = 1000;
 pl = @(x) (abs(x) + x)/2;  
 num_trials = 1; % 设置随机试验次数
@@ -16,12 +23,12 @@ for k = 1:num_trials
     u = 1 * pl(x);
     A = null(u');
     A = A * A';
-    A = A +  eye(n);
+    A = A + 1 * eye(n);
     b = 5 * rand(n, 1);
     
     % 调用求解函数
-    [x_star, r_star, iter, grad_norm] = solve_AVE_GN(A, b);
-    [x_star1, f_vals] = solve_ave(A, b, x_init, tol);
+    [x_star, r_star, iter, grad_norm, time1] = solve_AVE_GN(A, b);
+    [x_star1, f_vals, time2] = solve_ave(A, b, x_init, tol);
     
     % 记录当前试验结果
     x_norms(k) = norm(x_star, inf);

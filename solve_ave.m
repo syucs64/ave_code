@@ -1,42 +1,47 @@
-function [x_star, f_vals] = solve_ave(A, b, x_init, tol)
+function [x_star, f_vals, time] = solve_ave(A, b, x_init, tol)
 
-n = size(A, 1);
+
 max_iter = 10000;
 x = x_init;
-grad_h = @(x) A' * (A * x - b) + 2 * x;
-f = @(x) norm(A * x - abs(x) - b, 2)^2;
+AT = A';
 x_old = x;
-grad_old = grad_h(x_old);
+grad_old = 2 * (AT * (A * x - b) + x);
 L1 = 2 * (norm(A, 2)^2 + 1);
 L2 = norm(A, 2);
-f_vals = [f(x)];
+f_vals = [sum((A * x - abs(x) - b).^2)];
+r = A * x - b;
+absx = abs(x);
 
+tstart = tic;
 for iter = 1:max_iter
     if iter == 1
         alpha = 1 / (L1 + 4 * L2);
     else
         delta_x = x - x_old;
-        delta_grad = grad_h(x) - grad_old;
-        m1 = norm(delta_x, 2)^2;
+        grad = 2 * (AT * r + x);
+        delta_grad = grad - grad_old;
+        m1 = sum(delta_x.^2);
         n1 = abs(delta_x' * delta_grad);
         alpha = m1 / n1 ;
         x_old = x;
-        grad_old = grad_h(x_old);
-        %alpha = 1 / (L1 + 4 * L2);
+        grad_old = grad; 
     end
-    v1 = -2 * alpha * (A * x - b);
-    v2 = x - 2 * alpha * (A' * (A * x - b) + x - A' * abs(x));
-    temp = prox(v1, v2); 
-    const = norm(A * x - b, 2)^2 + norm(x, 2)^2;
-    %g1 = -2 * (A * x - b)' * abs(x) + const;
-    %g2 = (temp - x)' * (2  * (A' * (A * x - b) + x - A' * abs(x))) - 2 * (A * x - b)' * abs(temp) ...
-        %+ 1 / (2 * alpha) * (temp - x)' * (temp - x) + const;
-    x = temp;
-    f_vals(end + 1) = f(x);
-    if norm(x - x_old, 2) < tol
+    v1 = -2 * alpha * r;
+    v2 = x - 2 * alpha * (AT * r + x - AT * absx);
+    x_new = prox(v1, v2); 
+    while sum((A * x_new - b - abs(x_new)).^2) > f_vals(end)- 1e-6 * sum((x - x_new).^2)
+        v1 = 0.5 * v1;
+        v2 = 0.5 * (v2 + x);
+        x_new = prox(v1, v2); 
+    end
+    x = x_new;
+    r = A * x - b;
+    absx = abs(x);
+    f_vals(end + 1) = sum((r - absx).^2);
+    if norm(f_vals(end) - f_vals(end - 1), 2) < tol
         break;
     end
 end
-
+time = toc(tstart);
 x_star = x;
 
