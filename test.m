@@ -4,8 +4,6 @@ clear all;
 
 sizes = [1e3, 1e4, 1e5, 1e6]; % 测试不同规模的向量
 num_trials = 100;             % 每个规模测试次数
-
-
 n = 1000;
 pl = @(x) (abs(x) + x)/2;  
 num_trials = 1; % 设置随机试验次数
@@ -16,7 +14,7 @@ r_norms = zeros(num_trials, 1);
 grad_norms = zeros(num_trials, 1);
 iters = zeros(num_trials, 1);
 x_init = zeros(n, 1);
-tol = 1e-12;
+tol = 1e-9;
 for k = 1:num_trials
     % 每次试验生成新的随机数据
     x = 10 * (rand(n, 1) - rand(n, 1));
@@ -48,3 +46,6 @@ disp(['Average x_norm: ', num2str(avg_x_norm)]);
 disp(['Average r_norm: ', num2str(avg_r_norm)]);
 disp(['Average grad_norm: ', num2str(avg_grad_norm)]);
 disp(['Average iterations: ', num2str(avg_iter)]);
+
+fprintf('%.7f\n', f_vals(end));
+fprintf('%.7f\n', r_norms);
