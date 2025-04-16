@@ -31,8 +31,9 @@ for iter = 1:max_iter
     x_new = prox(v1, v2); 
     r_new = A * x_new - b;
     absx_new = abs(x_new);
+    %%{
     ind = 1;
-    while sum((r_new - absx_new).^2) > f_vals(end)- 1e-6 * sum((x - x_new).^2) && ind <= 10
+    while sum((r_new - absx_new).^2) > f_vals(end)- 1e-10 * sum((x - x_new).^2) && ind <= 10
         v1 = 0.5 * v1;
         v2 = 0.5 * (v2 + x);
         x_new = prox(v1, v2);
@@ -40,6 +41,7 @@ for iter = 1:max_iter
         absx_new = abs(x_new);
         ind = ind + 1;
     end
+    %}
     x = x_new;
     r = r_new;
     absx = absx_new;

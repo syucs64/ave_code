@@ -1,6 +1,6 @@
-function [x_star, f_vals, time] = solve_ave(A, b, x_init, tol)
+function [x_star, f_vals, time] = solve_ave_prox2(A, b, x_init, tol)
 
-
+[n, ~] = size(A);
 max_iter = 10000;
 x = x_init;
 AT = A';
@@ -28,7 +28,14 @@ for iter = 1:max_iter
     end
     v1 = -2 * alpha * r;
     v2 = x - 2 * alpha * (AT * r + x - AT * absx);
-    x_new = prox(v1, v2); 
+    x_new = x;
+    for i = 1:n
+        x_new(i) = prox(v1(i), v2(i));
+        r_new = A * x_new - b;
+        absx_new = abs(x_new);
+        v1 = -2 * alpha * r_new;
+        v2 = x_new - 2 * alpha * (AT * r_new + x - AT * absx_new);
+    end
     r_new = A * x_new - b;
     absx_new = abs(x_new);
     ind = 1;

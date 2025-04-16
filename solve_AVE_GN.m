@@ -1,4 +1,4 @@
-function [x_star, r_star, iter, grad_norm, time] = solve_AVE_GN(A, b, max_iter, tol, delta, s, mu)
+function [x_star, r_star, iter, grad_norm, time] = solve_AVE_GN(A, b, x_init,max_iter, tol, delta, s, mu)
 % 参数说明:
 % A: 系数矩阵
 % b: 右侧向量
@@ -13,14 +13,14 @@ function [x_star, r_star, iter, grad_norm, time] = solve_AVE_GN(A, b, max_iter, 
 % iter: 实际迭代次数
 % grad_norm: 最终梯度的无穷范数
 
-if nargin < 3, max_iter = 10000; end
-if nargin < 4, tol = 1e-12; end
-if nargin < 5, delta = 1e-4; end
-if nargin < 6, s = 1; end
-if nargin < 7, mu = 0.5; end
+if nargin < 4, max_iter = 1000; end
+if nargin < 5, tol = 1e-12; end
+if nargin < 6, delta = 1e-4; end
+if nargin < 7, s = 1; end
+if nargin < 8, mu = 0.5; end
 
 n = size(A, 1);
-x = zeros(n, 1); % 初始点x0=0
+x = x_init; % 初始点x0=0
 iter = 0;
 grad_norm = inf;
 tstart = tic;
