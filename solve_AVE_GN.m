@@ -1,17 +1,5 @@
 function [x_star, r_star, iter, grad_norm, time] = solve_AVE_GN(A, b, x_init,max_iter, tol, delta, s, mu)
-% 参数说明:
-% A: 系数矩阵
-% b: 右侧向量
-% max_iter: 最大迭代次数
-% tol: 梯度无穷范数的容差
-% delta: Hessian修正参数，默认为1e-4
-% s: Armijo线搜索的初始步长，默认为1
-% mu: Armijo条件中的参数，默认为0.5
-% 返回值:
-% x_star: 最优解
-% r_star: 最优修正量r*
-% iter: 实际迭代次数
-% grad_norm: 最终梯度的无穷范数
+
 
 if nargin < 4, max_iter = 1000; end
 if nargin < 5, tol = 1e-12; end

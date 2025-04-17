@@ -13,35 +13,34 @@ time_prox = zeros(num_trials, 1);
 u = 2 * rand(n, 1) - 1; 
 %x_init = zeros(n, 1);
 r_norms_prox = zeros(num_trials, 1);
-tol = 1e-28;
+tol = 1e-12;
 for k = 1:num_trials
-    % 每次试验生成新的随机数据
+    %{
     x = 10 * (rand(n, 1) - rand(n, 1));
     u = 1 * pl(x);
     A = null(u');
     A = A * A';
-    A = A + 1 * eye(n);
-
-        % 生成两个随机正交矩阵
+    A = A + 2 * eye(n);
+    b = 5 * rand(n, 1);
+    %}
+    % 生成两个随机正交矩阵
     [U, ~] = qr(randn(n));
     [V, ~] = qr(randn(n));
     
     % 生成(0,1)区间内的随机奇异值
     sigma = rand(n, 1);  % 均匀分布在(0,1)
-    
-    % 构造对角矩阵
     S = diag(sigma);
     A = U * S * V';
     x_true = rand(n, 1);
     b = A * x_true - abs(x_true);
-    %b = 5 * rand(n, 1);
+    
     %x_init = x_true + 1e-3 * u;
     x_init = zeros(n,1);
     % 调用求解函数
     [x_star, r_star, iter, grad_norm, time1] = solve_AVE_GN(A, b, x_init);
-    [x_star1, f_vals, time2] = solve_ave(A, b, x_init, tol);
-    %[x_star2, f_vals2, time3] = RIM(A, b, x_init, tol);
-    %[x_star3, f_vals3, time4] = solve_ave_prox2(A, b, x_init, tol);
+    [x_star1, f_vals1, time2] = solve_ave_prox(A, b, x_init, tol);
+    [x_star2, f_vals2, time3] = RIM(A, b, x_init, tol);
+    [x_star3, f_vals3, time4] = solve_ave_prox2(A, b, x_init, tol);
     % 记录当前试验结果
     x_norms(k) = norm(x_star, inf);
     r_norms(k) = norm(r_star, 2)^2;
@@ -49,7 +48,7 @@ for k = 1:num_trials
     iters(k) = iter;
     time_prox(k) = time2;
     time_newton(k) = time1;
-    r_norms_prox(k) = f_vals(end);
+    r_norms_prox(k) = f_vals1(end);
 end
 
 % 计算平均值
