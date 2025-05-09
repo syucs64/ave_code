@@ -1,7 +1,7 @@
 function [x_star, f_vals, time] = solve_ave_prox(A, b, x_init, tol)
 
 % min ||Ax - |x| - b||^2
-max_iter = 10000;
+max_iter = 100000;
 x = x_init;
 AT = A';
 x_old = x;
