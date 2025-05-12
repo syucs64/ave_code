@@ -41,6 +41,7 @@ for k = 1:num_trials
     [x_star1, f_vals1, time2] = solve_ave_prox(A, b, x_init, tol);
     [x_star2, f_vals2, time3] = RIM(A, b, x_init, tol);
     [x_star3, f_vals3, time4] = solve_gave_prox(A, I, b, x_init, tol);
+    %[x_star_minmax, f_vals_minimax] = PGmsAD(A, -I, b);
     % 记录当前试验结果
     x_norms(k) = norm(x_star, inf);
     r_norms(k) = norm(r_star, 2)^2;
@@ -54,8 +55,24 @@ for k = 1:num_trials
     A1 = [-0.5, 0.5, 1; 0, 0.5, 0.5; 0.5, 1, 0];
     B1 = [0.5, -0.5, 0; 1, -0.5, -0.5; -0.5, -1, 0];
     b1 = [1; 1; 3];
-    x0 = [0; 0; 0];
-    [x_star4, f_vals4, time5] = solve_gave_prox(A1, B1, b1, x0, tol);
+    x0 = [0; 0; 0; 0];
+    
+    % 矩阵 A
+    A2 = [ 5     4   -3     0;
+          4    11   -1   0.5;
+         -3    -1    6   0.5;
+          0   0.5  0.5  0.25 ];
+    
+    % 矩阵 B
+    B2 = [ 2.5   1   -2     0;
+          1   0.5   0.5  -0.25;
+         -2   0.5   0.5  -0.25;
+          0  -0.25 -0.25 -0.125 ];
+    
+    % 向量 b
+    b2 = [1; 1; 1; 1];
+    [x_star4, f_vals4, time5] = solve_gave_prox(A2, B2, b2, x0, tol);
+    [x_star_minmax, f_vals_minimax] = PGmsAD(A2, B2, b2);
 end
 
 % 计算平均值

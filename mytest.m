@@ -26,3 +26,25 @@ I = eye(n + 2);
 A = (M - I) \ (M + I);
 
 [U, S, V] = svd(A);
+
+for iter = 1:max_T
+    for k = 1:max_N
+        grad_y = b - (A + B) * x + (B - A) * lambda - mu * (y - u);
+        y = y + alpha * grad_y;
+        grad_z = lambda - mu * (z - v);
+        z = z + alpha * grad_z;
+        z = max(z, 0);
+    end
+    grad_x = -(A + B)' * y - lambda;
+    x_new = x - alpha * grad_x;
+    x_new = max(x_new, 0);
+    u = (1 + alpha * mu) * u - alpha * mu * y;
+    v = (1 + alpha * mu) * v - alpha * mu * z;
+    lambda = lambda - alpha * (-x + (B - A)' * y + z);
+    x = x_new;
+    
+    tmp = max((B - A) \ (b - (A + B) * x), 0);
+    x_tmp = x - tmp;
+    f_vals(end + 1) = norm(A * x_tmp + B * abs(x_tmp) - b, 2);
+end
+x_star = x;
