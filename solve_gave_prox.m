@@ -1,7 +1,7 @@
 function [x_star, f_vals, time] = solve_gave_prox(A, B, b, x_init, tol)
 
 % min ||Ax - B|x| - b||^2
-max_iter = 100000;
+max_iter = 1000000;
 x = x_init;
 AT = A';
 BT = B';
@@ -12,7 +12,7 @@ f_vals = [sum((A * x - B * abs(x) - b).^2)];
 absx = abs(x);
 r = A * x -  B * absx - b;
 
-alpha = 1 / (L1 + 2 * L2 + 2 * L3);
+alpha = 2 / (L1 + 2 * L2 + 2 * L3);
 tstart = tic;
 for iter = 1:max_iter
     v1 = -2 * alpha * BT * r;

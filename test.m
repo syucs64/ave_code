@@ -13,7 +13,7 @@ time_prox = zeros(num_trials, 1);
 u = 2 * rand(n, 1) - 1; 
 %x_init = zeros(n, 1);
 r_norms_prox = zeros(num_trials, 1);
-tol = 1e-12;
+tol = 1e-20;
 for k = 1:num_trials
     %{
     x = 10 * (rand(n, 1) - rand(n, 1));
@@ -71,8 +71,25 @@ for k = 1:num_trials
     
     % 向量 b
     b2 = [1; 1; 1; 1];
-    [x_star4, f_vals4, time5] = solve_gave_prox(A2, B2, b2, x0, tol);
+
+    A3 = [1, 1, 1;
+      1, 0, 1;
+      1, 1, 1];
+  
+    B3 = [-1, 1, 0;
+           1, 2, 1;
+           0, 1, 1];
+       
+    b3 = [-1; 4; 1];
+    [x_star4, f_vals4, time5] = solve_gave_prox(A2, -B2, b2, x0, tol);
     [x_star_minmax, f_vals_minimax] = PGmsAD(A2, B2, b2);
+    x = max(x_star4, 0);
+
+    tmp = max((B2 - A2) \ (b2 - (A2 + B2) * x), 0);
+    x = x - tmp;
+    g = b2 - (A2 + B2) * x;
+   
+
 end
 
 % 计算平均值
