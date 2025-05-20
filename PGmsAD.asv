@@ -18,14 +18,15 @@ x = zeros(n, 1);
 
 
 y = zeros(n, 1);
+
+
 z = zeros(n, 1);
 u = zeros(n, 1);
 v = zeros(n, 1);
 lambda = zeros(n, 1);
 
-I = eye(n);
-G = [-I, (B - A)' I];
-GGT = G * G';
+
+
 mu = 1;
 tmp = max((B - A) \ (b - (A + B) * x), 0);
 x_tmp = x - tmp;
@@ -50,12 +51,7 @@ for iter = 1:max_T
     v = (1 + alpha_x * mu) * v - alpha_x * mu * z;
     lambda = lambda - alpha_x * (-x + (B - A)' * y + z);
     x = max(x - alpha_x * grad_x, 0);
-    %{
-    xi = GGT \ (-x + (B - A)' * y + z);
-    x = x + xi;
-    y = y - (B - A)' * xi;
-    z = z - xi;
-    %}
+    
     temp_x = Q1(x, y, z, u, v, lambda);
     disp(temp_x);
     tmp = max((B - A) \ (b - (A + B) * x), 0);

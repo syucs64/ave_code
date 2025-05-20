@@ -83,11 +83,9 @@ for k = 1:num_trials
     b3 = [-1; 4; 1];
     [x_star4, f_vals4, time5] = solve_gave_prox(A2, -B2, b2, x0, tol);
     [x_star_minmax, f_vals_minimax] = PGmsAD(A2, B2, b2);
-    x = max(x_star4, 0);
+ 
 
-    tmp = max((B2 - A2) \ (b2 - (A2 + B2) * x), 0);
-    x = x - tmp;
-    g = b2 - (A2 + B2) * x;
+    
    
 
 end
